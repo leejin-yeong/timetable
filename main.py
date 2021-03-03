@@ -41,7 +41,12 @@ for c in ws.columns:#같은 열부터 읽음
         
         if len(people) < 3:
             result.cell(rows,cols,r.value)
-            
+            #현재 근무시간 업데이트
+            for person in people:
+                if rows == 7 : add = 4 # 저녁
+                else: add = 1.5 # 낮
+                MemberList[person].current_time += add
+
         rows += 1
         if rows > 7 : break
     cols += 1
