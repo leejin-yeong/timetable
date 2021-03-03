@@ -8,7 +8,7 @@ class Cells:
         self.KV = dict(col, people) #열, 사람list
         return self
 
-class people:
+class member:
     name = ""
     current_time = 0
     total_num = 0
@@ -18,10 +18,10 @@ class people:
         self.total_num = total_num
 
 #근무자 리스트 생성
-PeopleList = [ people("재현",21), people("병국",16), people("예윤",20),
-            people("혜지",23), people("태훈",19), people("유진",20),
-            people("서연",19), people("한솔",20), people("희지",18),
-            people("현빈",13), people("준범",5)
+MemberList = [ member("재현",21), member("병국",16), member("예윤",20),
+            member("혜지",23), member("태훈",19), member("유진",20),
+            member("서연",19), member("한솔",20), member("희지",18),
+            member("현빈",13), member("준범",5)
             ]
 
 # 엑셀 파일있는 경로
