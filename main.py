@@ -8,6 +8,21 @@ class Cells:
         self.KV = dict(col, people) #열, 사람list
         return self
 
+class people:
+    name = ""
+    current_time = 0
+    total_num = 0
+
+    def __init__(self, name, total_num):
+        self.name = name
+        self.total_num = total_num
+
+#근무자 리스트 생성
+PeopleList = [ people("재현",21), people("병국",16), people("예윤",20),
+            people("혜지",23), people("태훈",19), people("유진",20),
+            people("서연",19), people("한솔",20), people("희지",18),
+            people("현빈",13), people("준범",5)
+            ]
 
 # 엑셀 파일있는 경로
 path = "C:/Users/cooki/Desktop/timetable/example.xlsx"
