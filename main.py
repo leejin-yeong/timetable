@@ -33,6 +33,7 @@ ws = wb['Sheet1']
 write_wb = openpyxl.Workbook()
 result = write_wb.active
 
+result_list = []
 cols = 1
 for c in ws.columns:#같은 열부터 읽음
     rows = 1
@@ -46,7 +47,14 @@ for c in ws.columns:#같은 열부터 읽음
                 if rows == 7 : add = 4 # 저녁
                 else: add = 1.5 # 낮
                 MemberList[person].current_time += add
-
+        else:
+            if rows != 7:
+                next_cell = ws.cell(rows+1, cols).value.split()
+                for person in people:
+                    if person in next_cell:
+                        result_list.append(person)
+                result.cell(rows, cols, ' '.join(result_list))
+                result_list=[]
         rows += 1
         if rows > 7 : break
     cols += 1
