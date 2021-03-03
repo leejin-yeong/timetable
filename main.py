@@ -15,18 +15,24 @@ MemberList = {
     "현빈": member(13), "준범": member(5)
 }
 
+# total_num이 작은 순서대로 list 정렬
 def SortInNum(person, result_list, first, second):
-
     total = MemberList[person].total_num
     if total < first:
         result_list.insert(0, person)
+        second = first
         first = total
     elif total < second:
         result_list.insert(1, person)
         second = total
     else:
         result_list.append(person)
-    return result_list
+    return result_list, first, second
+
+def UpdateTime(person, rows):
+    if rows == 7 : add = 4 # 저녁
+    else: add = 1.5 # 낮
+    MemberList[person].current_time += add
 
 # 엑셀 파일있는 경로
 path = "C:/Users/cooki/Desktop/timetable/example.xlsx"
@@ -49,18 +55,17 @@ for c in ws.columns:#같은 열부터 읽음
             result.cell(rows,cols,r.value)
             #현재 근무시간 업데이트
             for person in people:
-                if rows == 7 : add = 4 # 저녁
-                else: add = 1.5 # 낮
-                MemberList[person].current_time += add
+                UpdateTime(person, rows)
         else:
             if rows != 7:
                 first = 100
                 second = 100
                 next_cell = ws.cell(rows+1, cols).value.split()
+
                 for person in people:
                     if person in next_cell:
-                        reulst_list = SortInNum(person, result_list, first, second)
-                        
+                        result_list, first, second = SortInNum(person, result_list, first, second)
+
                 result.cell(rows, cols, ' '.join(result_list[0:2]))
                 result_list=[]
         rows += 1
