@@ -9,20 +9,19 @@ class Cells:
         return self
 
 class member:
-    name = ""
     current_time = 0
     total_num = 0
 
-    def __init__(self, name, total_num):
-        self.name = name
+    def __init__(self, total_num):
         self.total_num = total_num
 
 #근무자 리스트 생성
-MemberList = [ member("재현",21), member("병국",16), member("예윤",20),
-            member("혜지",23), member("태훈",19), member("유진",20),
-            member("서연",19), member("한솔",20), member("희지",18),
-            member("현빈",13), member("준범",5)
-            ]
+MemberList = {
+    "재현": member(21), "병국": member(16), "예윤": member(20),
+    "혜지": member(23), "태훈": member(19), "유진": member(20),
+    "서연": member(19), "한솔": member(20), "희지": member(18),
+    "현빈": member(13), "준범": member(5)
+}
 
 # 엑셀 파일있는 경로
 path = "C:/Users/cooki/Desktop/timetable/example.xlsx"
@@ -42,7 +41,7 @@ for c in ws.columns:#같은 열부터 읽음
         
         if len(people) < 3:
             result.cell(rows,cols,r.value)
-            print(r.value)
+            
         rows += 1
         if rows > 7 : break
     cols += 1
