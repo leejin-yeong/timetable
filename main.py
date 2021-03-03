@@ -1,8 +1,9 @@
 import openpyxl 
 
 class member:
-    current_time = 0
+    current_time = 0 # <= 14
     total_num = 0
+    col_time = 0 # <= 8
 
     def __init__(self, total_num):
         self.total_num = total_num
@@ -33,6 +34,7 @@ def UpdateTime(person, rows):
     if rows == 7 : add = 4 # 저녁
     else: add = 1.5 # 낮
     MemberList[person].current_time += add
+    MemberList[person].col_time += add
 
 # 엑셀 파일있는 경로
 path = "C:/Users/cooki/Desktop/timetable/example.xlsx"
@@ -63,10 +65,21 @@ for c in ws.columns:#같은 열부터 읽음
                 next_cell = ws.cell(rows+1, cols).value.split()
 
                 for person in people:
-                    if person in next_cell:
+                    if person in next_cell: # 다음 셀에 있는지 확인
                         result_list, first, second = SortInNum(person, result_list, first, second)
 
+                if len(result_list) < 2: # 다음 셀 연속 근무자로 못채움
+                    if len(result_list) == 1: first = 0
+                    for person in people: # 근무 가능 시간이 적은 순으로 채움
+                        result_list, first, second = SortInNum(person, result_list, first, second)
+
+                for person in result_list:
+                    if MemberList[person].col_time + 1.5 > 8 or MemberList[person].current_time + 1.5 > 14: 
+                        result_list.remove(person)
+
                 result.cell(rows, cols, ' '.join(result_list[0:2]))
+                #UpdateTime(result_list[0], rows)
+                #UpdateTime(result_list[1], rows)
                 result_list=[]
         rows += 1
         if rows > 7 : break
