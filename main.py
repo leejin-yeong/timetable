@@ -1,13 +1,5 @@
 import openpyxl 
 
-# 각 셀의 정보를 저장할 클래스
-class Cells:
-    #생성자 - 초기값 설정
-    def __init__(self, row, col, people):
-        self.row = row # 행이름
-        self.KV = dict(col, people) #열, 사람list
-        return self
-
 class member:
     current_time = 0
     total_num = 0
@@ -22,6 +14,19 @@ MemberList = {
     "서연": member(19), "한솔": member(20), "희지": member(18),
     "현빈": member(13), "준범": member(5)
 }
+
+def SortInNum(person, result_list, first, second):
+
+    total = MemberList[person].total_num
+    if total < first:
+        result_list.insert(0, person)
+        first = total
+    elif total < second:
+        result_list.insert(1, person)
+        second = total
+    else:
+        result_list.append(person)
+    return result_list
 
 # 엑셀 파일있는 경로
 path = "C:/Users/cooki/Desktop/timetable/example.xlsx"
@@ -49,11 +54,14 @@ for c in ws.columns:#같은 열부터 읽음
                 MemberList[person].current_time += add
         else:
             if rows != 7:
+                first = 100
+                second = 100
                 next_cell = ws.cell(rows+1, cols).value.split()
                 for person in people:
                     if person in next_cell:
-                        result_list.append(person)
-                result.cell(rows, cols, ' '.join(result_list))
+                        reulst_list = SortInNum(person, result_list, first, second)
+                        
+                result.cell(rows, cols, ' '.join(result_list[0:2]))
                 result_list=[]
         rows += 1
         if rows > 7 : break
