@@ -29,6 +29,7 @@ def SortInNum(person, result_list, first, second):
     else:
         result_list.append(person)
     return result_list, first, second
+        
 
 def UpdateTime(person, rows):
     if rows == 7 : add = 4 # 저녁
@@ -51,6 +52,7 @@ cols = 1
 for c in ws.columns:#같은 열부터 읽음
     rows = 1
     for r in c:
+        prev_list = [] #이전 타임 근무자 저장
         people = r.value.split() #공백 기준 나누기
         
         if len(people) < 3:
@@ -62,25 +64,45 @@ for c in ws.columns:#같은 열부터 읽음
             if rows != 7:
                 first = 100
                 second = 100
+                first_list = []
+                second_list = []
+                third_list = []
                 next_cell = ws.cell(rows+1, cols).value.split()
 
+                #1. 이전 타임에 근무하는지 확이
                 for person in people:
+                    if person in prev_list: #이전 타임에 근무함 
+                        if person in next_cell: #다음 타임 근무 가능
+                            first_list.insert(0, person)
+                        else:
+                            first_list.append(person)
+                    elif person in next_cell: #다음 타임 근무 가능
+                        second_list.append(person)
+                    else:
+                        third_list.append(person)
+                result_list = first_list + second_list + third_list
+                
+
+                """for person in people:
                     if person in next_cell: # 다음 셀에 있는지 확인
                         result_list, first, second = SortInNum(person, result_list, first, second)
 
                 if len(result_list) < 2: # 다음 셀 연속 근무자로 못채움
                     if len(result_list) == 1: first = 0
                     for person in people: # 근무 가능 시간이 적은 순으로 채움
-                        result_list, first, second = SortInNum(person, result_list, first, second)
+                        result_list, first, second = SortInNum(person, result_list, first, second)"""
 
-                for person in result_list:
+                """for person in result_list:
                     if MemberList[person].col_time + 1.5 > 8 or MemberList[person].current_time + 1.5 > 14: 
-                        result_list.remove(person)
+                        result_list.remove(person)"""
 
                 result.cell(rows, cols, ' '.join(result_list[0:2]))
-                #UpdateTime(result_list[0], rows)
-                #UpdateTime(result_list[1], rows)
-                result_list=[]
+                UpdateTime(result_list[0], rows)
+                UpdateTime(result_list[1], rows)
+                #결과 값을 prev_list에 저장. 다음 행 우선순위 결정 시 사용
+                prev_list.append(result_list[0])
+                prev_list.append(result_list[1])
+                result_list = []
         rows += 1
         if rows > 7 : break
     cols += 1
