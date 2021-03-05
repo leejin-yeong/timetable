@@ -33,8 +33,10 @@ def SortByNum(peoplelist):
     return peoplelist
 
 def UpdateTime(person, rows):
-    if rows == 7 : add = 4 # 저녁
-    else: add = 1.5 # 낮
+    if rows == 7 : 
+        add = 4 # 저녁
+    else: 
+        add = 1.5 # 낮
     MemberList[person].current_time += add
     MemberList[person].col_time += add
 
@@ -89,10 +91,16 @@ for c in ws.columns:#같은 열부터 읽음
             third_list = SortByNum(third_list)
             result_list = first_list + second_list + third_list
 
+            print(result_list)
             for person in result_list:
-                if MemberList[person].col_time + 1.5 > 8 or MemberList[person].current_time + 1.5 > 14: 
+                if rows == 7: 
+                    add = 4
+                else: 
+                    add = 1.5
+                if MemberList[person].col_time + add > 8 or MemberList[person].current_time + add > 14: 
                     result_list.remove(person)
-
+                    
+            print(result_list)
             result.cell(rows, cols, ' '.join(result_list[0:2]))
             UpdateTime(result_list[0], rows)
             UpdateTime(result_list[1], rows)
