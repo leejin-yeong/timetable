@@ -17,19 +17,17 @@ MemberList = {
 }
 
 # total_num이 작은 순서대로 list 정렬
-def SortInNum(person, result_list, first, second):
-    total = MemberList[person].total_num
-    if total < first:
-        result_list.insert(0, person)
-        second = first
-        first = total
-    elif total < second:
-        result_list.insert(1, person)
-        second = total
-    else:
-        result_list.append(person)
-    return result_list, first, second
-        
+def SortByNum(peoplelist):
+    length = len(peoplelist)
+    for i in range(length):
+        total = MemberList[peoplelist[i]].total_num
+        for j in range(i+1, length):
+            next_total = MemberList[peoplelist[j]].total_num
+            if total > next_total:
+                temp = peoplelist[j]
+                peoplelist[j] = peoplelist[i]
+                peoplelist[i] = temp
+    return peoplelist
 
 def UpdateTime(person, rows):
     if rows == 7 : add = 4 # 저녁
@@ -80,17 +78,11 @@ for c in ws.columns:#같은 열부터 읽음
                         second_list.append(person)
                     else:
                         third_list.append(person)
+        
+                first_list = SortByNum(first_list)
+                second_list = SortByNum(second_list)
+                third_list = SortByNum(third_list)
                 result_list = first_list + second_list + third_list
-                
-
-                """for person in people:
-                    if person in next_cell: # 다음 셀에 있는지 확인
-                        result_list, first, second = SortInNum(person, result_list, first, second)
-
-                if len(result_list) < 2: # 다음 셀 연속 근무자로 못채움
-                    if len(result_list) == 1: first = 0
-                    for person in people: # 근무 가능 시간이 적은 순으로 채움
-                        result_list, first, second = SortInNum(person, result_list, first, second)"""
 
                 """for person in result_list:
                     if MemberList[person].col_time + 1.5 > 8 or MemberList[person].current_time + 1.5 > 14: 
