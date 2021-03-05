@@ -7,6 +7,9 @@ class member:
 
     def __init__(self, total_num):
         self.total_num = total_num
+    
+    def reset_col_time(self):
+        self.col_time=0
 
 #근무자 리스트 생성
 MemberList = {
@@ -49,6 +52,10 @@ result_list = []
 cols = 1
 for c in ws.columns:#같은 열부터 읽음
     rows = 1
+    #모든 근무자의 하루 근무량 초기화
+    for m in MemberList:
+        MemberList[m].reset_col_time()
+
     for r in c:
         prev_list = [] #이전 타임 근무자 저장
         people = r.value.split() #공백 기준 나누기
@@ -59,42 +66,41 @@ for c in ws.columns:#같은 열부터 읽음
             for person in people:
                 UpdateTime(person, rows)
         else:
+            first_list = []
+            second_list = []
+            third_list = []
             if rows != 7:
-                first = 100
-                second = 100
-                first_list = []
-                second_list = []
-                third_list = []
                 next_cell = ws.cell(rows+1, cols).value.split()
 
-                #1. 이전 타임에 근무하는지 확이
-                for person in people:
-                    if person in prev_list: #이전 타임에 근무함 
-                        if person in next_cell: #다음 타임 근무 가능
-                            first_list.insert(0, person)
-                        else:
-                            first_list.append(person)
-                    elif person in next_cell: #다음 타임 근무 가능
-                        second_list.append(person)
+            #1. 이전 타임에 근무하는지 확인
+            for person in people:   
+                if person in prev_list: #이전 타임에 근무함 
+                    if (rows != 7) and (person in next_cell): #다음 타임 근무 가능
+                        first_list.insert(0, person)
                     else:
-                        third_list.append(person)
-        
-                first_list = SortByNum(first_list)
-                second_list = SortByNum(second_list)
-                third_list = SortByNum(third_list)
-                result_list = first_list + second_list + third_list
+                        first_list.append(person)
+                elif (rows!=7) and (person in next_cell): #다음 타임 근무 가능
+                    second_list.append(person)
+                else:
+                    third_list.append(person)
 
-                """for person in result_list:
-                    if MemberList[person].col_time + 1.5 > 8 or MemberList[person].current_time + 1.5 > 14: 
-                        result_list.remove(person)"""
+            first_list = SortByNum(first_list)
+            second_list = SortByNum(second_list)
+            third_list = SortByNum(third_list)
+            result_list = first_list + second_list + third_list
 
-                result.cell(rows, cols, ' '.join(result_list[0:2]))
-                UpdateTime(result_list[0], rows)
-                UpdateTime(result_list[1], rows)
-                #결과 값을 prev_list에 저장. 다음 행 우선순위 결정 시 사용
-                prev_list.append(result_list[0])
-                prev_list.append(result_list[1])
-                result_list = []
+            for person in result_list:
+                if MemberList[person].col_time + 1.5 > 8 or MemberList[person].current_time + 1.5 > 14: 
+                    result_list.remove(person)
+
+            result.cell(rows, cols, ' '.join(result_list[0:2]))
+            UpdateTime(result_list[0], rows)
+            UpdateTime(result_list[1], rows)
+            #결과 값을 prev_list에 저장. 다음 행 우선순위 결정 시 사용
+            prev_list.append(result_list[0])
+            prev_list.append(result_list[1])
+            result_list = []
+                     
         rows += 1
         if rows > 7 : break
     cols += 1
