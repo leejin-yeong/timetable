@@ -50,6 +50,7 @@ ws = wb['Sheet1']
 write_wb = openpyxl.Workbook()
 result = write_wb.active
 
+people_list = []
 result_list = []
 cols = 1
 for c in ws.columns:#같은 열부터 읽음
@@ -89,25 +90,27 @@ for c in ws.columns:#같은 열부터 읽음
             first_list = SortByNum(first_list)
             second_list = SortByNum(second_list)
             third_list = SortByNum(third_list)
-            result_list = first_list + second_list + third_list
+            people_list = first_list + second_list + third_list
 
-            print(result_list)
-            for person in result_list:
+
+            for person in people_list:
                 if rows == 7: 
                     add = 4
                 else: 
                     add = 1.5
-                if MemberList[person].col_time + add > 8 or MemberList[person].current_time + add > 14: 
-                    result_list.remove(person)
-                    
-            print(result_list)
+        
+                if (MemberList[person].col_time + add <= 8) and (MemberList[person].current_time + add <= 14): 
+                    #result_list.remove(person) # 인덱스가 당겨지니까 당겨진 것에 대해선 체크를 안함
+                    result_list.append(person)
+
             result.cell(rows, cols, ' '.join(result_list[0:2]))
-            UpdateTime(result_list[0], rows)
-            UpdateTime(result_list[1], rows)
-            #결과 값을 prev_list에 저장. 다음 행 우선순위 결정 시 사용
-            prev_list.append(result_list[0])
-            prev_list.append(result_list[1])
+            #print(cols, rows, result_list[0], result_list[1])
+            for i in result_list:
+                UpdateTime(i, rows)
+                #결과 값을 prev_list에 저장. 다음 행 우선순위 결정 시 사용
+                prev_list.append(i)
             result_list = []
+            people_list = []
                      
         rows += 1
         if rows > 7 : break
