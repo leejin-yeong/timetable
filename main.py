@@ -59,8 +59,8 @@ for c in ws.columns:#같은 열부터 읽음
     for m in MemberList:
         MemberList[m].reset_col_time()
 
+    prev_list=[] #이전 타임 근무자 저장
     for r in c:
-        prev_list = [] #이전 타임 근무자 저장
         people = r.value.split() #공백 기준 나누기
         
         if len(people) < 3:
@@ -68,6 +68,7 @@ for c in ws.columns:#같은 열부터 읽음
             #현재 근무시간 업데이트
             for person in people:
                 UpdateTime(person, rows)
+                prev_list.append(person)
         else:
             first_list = []
             second_list = []
@@ -92,7 +93,6 @@ for c in ws.columns:#같은 열부터 읽음
             third_list = SortByNum(third_list)
             people_list = first_list + second_list + third_list
 
-
             for person in people_list:
                 if rows == 7: 
                     add = 4
@@ -100,12 +100,11 @@ for c in ws.columns:#같은 열부터 읽음
                     add = 1.5
         
                 if (MemberList[person].col_time + add <= 8) and (MemberList[person].current_time + add <= 14): 
-                    #result_list.remove(person) # 인덱스가 당겨지니까 당겨진 것에 대해선 체크를 안함
                     result_list.append(person)
 
             result.cell(rows, cols, ' '.join(result_list[0:2]))
-            #print(cols, rows, result_list[0], result_list[1])
-            for i in result_list:
+            prev_list = []
+            for i in result_list[0:2]:
                 UpdateTime(i, rows)
                 #결과 값을 prev_list에 저장. 다음 행 우선순위 결정 시 사용
                 prev_list.append(i)
